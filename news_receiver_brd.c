@@ -15,10 +15,9 @@ int main(int argc, char* argv[])
 	int str_len;
 
 	struct sockaddr_in adr;
-	struct ip_mreq join_adr;
 
-	if (argc != 3) {
-		printf("Usage: %s <GroupIP> <port>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <port>\n", argv[0]);
 		exit(1);
 	}
 
@@ -29,15 +28,10 @@ int main(int argc, char* argv[])
 	memset(&adr, 0, sizeof(adr));
 	adr.sin_family = AF_INET;
 	adr.sin_addr.s_addr = htonl(INADDR_ANY);
-	adr.sin_port = htons(atoi(argv[2]));
+	adr.sin_port = htons(atoi(argv[1]));
 
 	if (bind(recv_sock, (struct sockaddr*)&adr, sizeof(adr)) == -1)
 		error_handling("bind() error.");
-
-	join_adr.imr_multiaddr.s_addr=inet_addr(argv[1]);
-	join_adr.imr_interface.s_addr=htonl(INADDR_ANY);
-
-	setsockopt(recv_sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (void*)&join_adr, sizeof(join_adr));
 
 	while(1)
 	{
