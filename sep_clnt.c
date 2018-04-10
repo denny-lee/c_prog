@@ -11,8 +11,7 @@ void error_handling(char *message);
 int main(int argc, char* argv[])
 {
 	int sock;
-	char message[BUF_SIZE];
-	int str_len;
+	char buf[BUF_SIZE];
 	struct sockaddr_in serv_adr;
 	FILE * readfp;
 	FILE * writefp;
@@ -33,22 +32,20 @@ int main(int argc, char* argv[])
 
 	if (connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
 		error_handling("connect() error.");
-	else
-		puts("Connected...");
 
     readfp=fdopen(sock, "r");
     writefp=fdopen(sock, "w");
-	while (1) {
-		fputs("Input message(Q to quit): ", stdout);
-		fgets(message, BUF_SIZE, stdin);
-		if (!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
-			break;
 
-		fputs(message, writefp);
-		fflush(writefp);
-		fgets(message, BUF_SIZE, readfp);
-		printf("Message from server: %s\n", message);
+	while (1) {
+		if(fgets(buf, sizeof(buf), readfp)==NULL)
+            break;
+
+		fputs(buf, stdout);
+		fflush(stdout);
 	}
+
+	fputs("FROM CLIENT: Thanks\n", writefp);
+	fflush(writefp);
 	fclose(writefp);
 	fclose(readfp);
 	return 0;

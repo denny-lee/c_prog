@@ -77,8 +77,8 @@ int main(int argc, char* argv[])
                     str_len=read(clnt_sock, buf, BUF_SIZE);
                     if(str_len==0)
                     {
-                        FD_CLR(1,&reads);
-                        close(1);
+                        FD_CLR(i,&reads);
+                        close(i);
                         printf("closed client: %d \n", i);
                     }
                     else
